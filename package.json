@@ -1,0 +1,33 @@
+{
+  "name": "redux-io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alk831/redux-io.git"
+  },
+  "keywords": [
+    "redux",
+    "realtime",
+    "socket.io",
+    "socket",
+    "websocket",
+    "io"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alk831/redux-io/issues"
+  },
+  "homepage": "https://github.com/alk831/redux-io#readme",
+  "devDependencies": {
+    "@types/react-redux": "^7.0.8",
+    "@types/socket.io-client": "^1.4.32",
+    "redux": "^4.0.1",
+    "socket.io-client": "^2.2.0"
+  }
+}
