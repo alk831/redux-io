@@ -6,7 +6,7 @@ interface IOptions {
 
 const defaultOptions = {
   autoEmit: true,
-  emitName: '$'
+  emitPrefix: '$'
 }
 
 interface actionMeta {

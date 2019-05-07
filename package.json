@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --ci --coverage --verbose --forceExit",
-    "test:cov": "test && cat ./tests/coverage/lcov.info | coveralls"
+    "test:cov": "npm test && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
