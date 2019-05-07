@@ -1,9 +1,7 @@
 import { Action, Dispatch, Store } from 'redux';
 
 interface IOptions {
-  socket: SocketIOClientStatic,
-  autoEmit: boolean
-  emitName: string
+  socket: SocketIOClient.Socket
 }
 
 const defaultOptions = {
@@ -26,11 +24,14 @@ const middleware = (options: IOptions) => {
     ...options
   }
 
-  return (store: Store) => (action: actionWithMeta) => (dispatch: Dispatch) => {
+  return (store: Store) => (next: Dispatch) => (action: actionWithMeta) => {
     const { socket } = mergedOptions;
-    const { meta = {} } = action;
 
-    socket.emit(action.type, action, store.dispatch);
+    next(action);
+
+    if (action.meta && action.meta.io === true) {
+      socket.emit(action.type, action, store.dispatch);
+    }
   }
 }
 
