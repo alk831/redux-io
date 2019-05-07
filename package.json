@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --ci --coverage --verbose --forceExit"
+    "test": "jest --ci --coverage --verbose --forceExit",
+    "test:cov": "test && cat ./tests/coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
     "@types/jest": "^24.0.12",
     "@types/react-redux": "^7.0.8",
     "@types/socket.io-client": "^1.4.32",
+    "coveralls": "^3.0.3",
     "jest": "^24.8.0",
     "redux": "^4.0.1",
     "socket.io-client": "^2.2.0"
