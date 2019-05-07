@@ -25,8 +25,10 @@
   },
   "homepage": "https://github.com/alk831/redux-io#readme",
   "devDependencies": {
+    "@types/jest": "^24.0.12",
     "@types/react-redux": "^7.0.8",
     "@types/socket.io-client": "^1.4.32",
+    "jest": "^24.8.0",
     "redux": "^4.0.1",
     "socket.io-client": "^2.2.0"
   }
