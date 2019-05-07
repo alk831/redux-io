@@ -1,7 +1,6 @@
-import jest from 'jest';
-import { combineReducers, createStore, applyMiddleware } from 'redux';
-import reduxIo from '../index';
-import io from 'socket.io-client';
+const { combineReducers, createStore, applyMiddleware } = require('redux');
+const reduxIo = require('../index');
+const io = require('socket.io-client');
 
 function chatReducer(state = [], action) {
   switch(action.type) {
