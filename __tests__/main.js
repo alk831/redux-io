@@ -1,5 +1,5 @@
 const { combineReducers, createStore, applyMiddleware } = require('redux');
-const reduxIo = require('../index');
+const reduxIo = require('../dist/index').default;
 const io = require('socket.io-client');
 
 function chatReducer(state = [], action) {
@@ -13,7 +13,7 @@ function chatReducer(state = [], action) {
 
 describe('', () => {
   it('emits event properly', () => {
-    const spyIo = jest.spyOn(io);
+    // const spyIo = jest.spyOn(io);
     const socket = io('localhost');
     const spyEmit = jest.spyOn(socket, 'emit');
 
@@ -30,7 +30,7 @@ describe('', () => {
 
     store.dispatch(action);
 
-    expect(spyIo).toHaveBeenCalled();
-    expect(spyEmit).toHaveBeenCalledWith(action.type, action, store.dispatch);
+    // expect(spyIo).toHaveBeenCalled();
+    expect(spyEmit).toHaveBeenCalledWith(action.type, action, expect.any(Function));
   });
 });
