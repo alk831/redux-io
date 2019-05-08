@@ -9,3 +9,41 @@
 
 [![Build Status](https://travis-ci.org/alk831/redux-io.svg?branch=master)](https://travis-ci.org/alk831/redux-io)
 [![Coverage Status](https://coveralls.io/repos/github/alk831/redux-io/badge.svg?branch=master)](https://coveralls.io/github/alk831/redux-io?branch=master)
+
+## Example
+### Client
+```js
+
+import reduxIoMiddleware from 'redux-io';
+import io from 'socket.io-client';
+
+const socket = io('localhost');
+
+const store = createStore(
+  applyMiddleware(
+    reduxIoMiddleware({ socket })
+  )
+);
+
+store.dispatch({
+  type: 'SEND_MESSAGE',
+  payload: 'Message sent from client',
+  meta: { io: true }
+});
+```
+### Server
+
+```js
+
+socket.on('SEND_MESSAGE', (action, dispatchOnce) => {
+
+  socket.emit('$_RECEIVE_MESSAGE', {
+    type: '$_RECEIVE_MESSAGE',
+    payload: action.payload
+  });
+
+  /* dispatchOnce allows to dispatch one action to the socket that has sent SEND_MESSAGE event */
+  dispatchOnce({ type: 'MESSAGE_SUCCESS' });
+});
+
+```
