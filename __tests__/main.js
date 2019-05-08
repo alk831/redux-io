@@ -55,11 +55,7 @@ afterEach((done) => {
 
 describe('Redux middleware', () => {
   it('emits event properly', (done) => {
-    if (!serverSocket) {
-      const error = new Error(`Server socket undefined`)
-      error.error = serverSocket;
-    }
-    expect(serverSocket).toBeUndefined();
+    expect(serverSocket).toBeTruthy();
     const clientEmit = jest.spyOn(socket, 'emit');
 
     const store = createStore(
