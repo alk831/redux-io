@@ -1,7 +1,7 @@
 {
   "name": "redux-io",
   "version": "1.0.0",
-  "description": "Treat action types as events",
+  "description": "Treat action types as they were events",
   "main": "index.js",
   "scripts": {
     "test": "jest --ci --coverage --verbose --forceExit",
