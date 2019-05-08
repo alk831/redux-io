@@ -29,7 +29,8 @@ afterAll((done) => {
 beforeEach((done) => {
   ioServer.on('connection', (socket) => {
     serverSocket = socket;
-    if (serverSocket) {
+    console.log(serverSocket);
+    if (serverSocket != null) {
       done();
     }
   });
