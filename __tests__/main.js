@@ -45,6 +45,7 @@ describe('Redux middleware', () => {
 
       ioServer.on('connection', (socket) => {
         serverSocket = socket;
+        console.log({ socket })
         if (serverSocket && serverSocket.on) {
           expect(serverSocket).toBeTruthy();
           resolve();
