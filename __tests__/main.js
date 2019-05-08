@@ -26,23 +26,22 @@ afterAll((done) => {
   done();
 });
 
-beforeEach(async (done) => {
+beforeEach((done) => {
   ioServer.on('connection', (socket) => {
     serverSocket = socket;
     if (serverSocket && serverSocket.on) {
+      expect(serverSocket).toBeTruthy();
       done();
     }
   });
 
-  setTimeout(() => {
-    // Square brackets are used for IPv6
-    socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
-      'reconnection delay': 0,
-      'reopen delay': 0,
-      'force new connection': true,
-      transports: ['websocket'],
-    });
-  }, 50);
+  // Square brackets are used for IPv6
+  socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
+    'reconnection delay': 0,
+    'reopen delay': 0,
+    'force new connection': true,
+    transports: ['websocket'],
+  });
 });
 
 afterEach((done) => {
@@ -54,6 +53,7 @@ afterEach((done) => {
 
 
 describe('Redux middleware', () => {
+
   it('emits event properly', (done) => {
     expect(serverSocket).toBeTruthy();
     const clientEmit = jest.spyOn(socket, 'emit');
