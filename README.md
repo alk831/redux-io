@@ -13,9 +13,9 @@
 ## Example
 ### Client
 ```js
-
-import reduxIoMiddleware from 'redux-io';
+import { createStore, applyMiddleware } from 'redux';
 import io from 'socket.io-client';
+import reduxIoMiddleware from 'redux-io';
 
 const socket = io('localhost');
 
@@ -43,7 +43,7 @@ socket.on('SEND_MESSAGE', (action, dispatchOnce) => {
   });
 
   /* dispatchOnce allows to dispatch one action to the socket that has sent SEND_MESSAGE event */
-  dispatchOnce({ type: 'MESSAGE_SUCCESS' });
+  dispatchOnce({ type: '$_MESSAGE_SUCCESS' });
 });
 
 ```
