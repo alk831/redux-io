@@ -29,7 +29,9 @@ afterAll((done) => {
 beforeEach((done) => {
   ioServer.on('connection', (socket) => {
     serverSocket = socket;
-    done();
+    if (serverSocket) {
+      done();
+    }
   });
   // Square brackets are used for IPv6
   socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
