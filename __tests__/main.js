@@ -41,7 +41,7 @@ describe('Redux middleware', () => {
 
   beforeEach(() =>
     new Promise((resolve) => {
-      console.log('beforeEach');
+      console.log('beforeEach', { ioServer });
 
       ioServer.on('connection', (socket) => {
         serverSocket = socket;
