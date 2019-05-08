@@ -33,14 +33,16 @@ beforeEach(async (done) => {
       done();
     }
   });
-  await wait(100);
-  // Square brackets are used for IPv6
-  socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
-    'reconnection delay': 0,
-    'reopen delay': 0,
-    'force new connection': true,
-    transports: ['websocket'],
-  });
+
+  setTimeout(() => {
+    // Square brackets are used for IPv6
+    socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
+      'reconnection delay': 0,
+      'reopen delay': 0,
+      'force new connection': true,
+      transports: ['websocket'],
+    });
+  }, 50);
 });
 
 afterEach((done) => {
