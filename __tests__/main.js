@@ -37,27 +37,28 @@ afterEach((done) => {
 describe('Redux middleware', () => {
 
   beforeEach(() =>
-  new Promise((resolve) => {
-    ioServer.on('connection', (socket) => {
-      serverSocket = socket;
-      if (serverSocket && serverSocket.on) {
-        expect(serverSocket).toBeTruthy();
-        console.log('RESOLVE')
-        resolve();
-      }
-    });
+    new Promise((resolve) => {
 
-    // Square brackets are used for IPv6
-    socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
-      'reconnection delay': 0,
-      'reopen delay': 0,
-      'force new connection': true,
-      transports: ['websocket'],
+      ioServer.on('connection', (socket) => {
+        serverSocket = socket;
+        if (serverSocket && serverSocket.on) {
+          expect(serverSocket).toBeTruthy();
+          resolve();
+        }
+      });
+
+      // Square brackets are used for IPv6
+      socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
+        'reconnection delay': 0,
+        'reopen delay': 0,
+        'force new connection': true,
+        transports: ['websocket'],
+      })
     })
-  })
-);
+  );
 
   it('emits event properly', (done) => {
+    console.log('TEST - 1');
     expect(serverSocket).toBeTruthy();
     const clientEmit = jest.spyOn(socket, 'emit');
 
