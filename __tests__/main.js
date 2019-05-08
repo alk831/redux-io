@@ -61,7 +61,7 @@ describe('Redux middleware', () => {
 
     const action = {
       type: 'SEND_MESSAGE',
-      payload: 'test message',
+      payload: 'Message sent from client',
       meta: { io: true }
     }
 
@@ -81,36 +81,34 @@ describe('Redux middleware', () => {
         socket
       })
     );
-    // const storeSubscription = jest.spyOn(store.subscribe);
-    const unsubscribe = store.subscribe((a) => {
-      console.log('CALLED ss', a)
-    });
+    const subscriptionHandler = () => {};
+    const unsubscribe = store.subscribe(subscriptionHandler);
+    // const spySubscription = jest.spyOn(subscriptionHandler);
 
     const action = {
       type: 'SEND_MESSAGE',
-      payload: 'test message',
+      payload: 'Message sent from client',
       meta: { io: true }
     }
 
-    serverSocket.on('SEND_MESSAGE', async (receivedAction, dispatch) => {
-      dispatch({
+    serverSocket.on('SEND_MESSAGE', async (receivedAction, dispatchOnce) => {
+
+      expect(store.getState()).toStrictEqual(['Message sent from client']);
+      expect(receivedAction).toStrictEqual(action);
+
+      dispatchOnce({
         type: '$_RECEIVE_MESSAGE',
         payload: 'Message sent from server'
       });
+
       await wait();
 
-      dispatch({
-        type: '$_RECEIVE_MESSAGE',
-        payload: 'Message sent from server'
-      });
+      expect(store.getState()).toStrictEqual(['Message sent from client', 'Message sent from server']);
 
-      await wait(500);
-
+      unsubscribe();
       done();
     });
 
     store.dispatch(action);
-
-    unsubscribe();
   });
 });

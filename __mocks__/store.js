@@ -3,8 +3,8 @@ const { combineReducers, createStore, applyMiddleware } = require('redux');
 function chatReducer(state = [], action) {
   switch(action.type) {
     case 'SEND_MESSAGE':
-    case '$_RECEIVE_MESSAGE': 
-      [...state, action.payload]
+    case '$_RECEIVE_MESSAGE':
+      return [...state, action.payload]
     default: return state;
   }
 }
