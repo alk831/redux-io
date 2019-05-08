@@ -13,6 +13,27 @@ let ioServer;
 
 let serverSocket;
 
+function restoreConnection() {
+  return new Promise((resolve) => {
+    
+    ioServer.on('connection', (socket) => {
+      serverSocket = socket;
+      if (serverSocket && serverSocket.on) {
+        expect(serverSocket).toBeTruthy();
+        resolve();
+      }
+    });
+
+    // Square brackets are used for IPv6
+    socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
+      'reconnection delay': 0,
+      'reopen delay': 0,
+      'force new connection': true,
+      transports: ['websocket'],
+    })
+  });
+}
+
 beforeAll((done) => {
   console.log('beforeAll');
   httpServer = http.createServer().listen();
@@ -39,31 +60,11 @@ afterEach((done) => {
 
 describe('Redux middleware', () => {
 
-  beforeEach(() =>
-    new Promise((resolve) => {
-      console.log('beforeEach', { ioServer });
+  // beforeEach(restoreConnection);
 
-      ioServer.on('connection', (socket) => {
-        serverSocket = socket;
-        console.log({ socket })
-        if (serverSocket && serverSocket.on) {
-          expect(serverSocket).toBeTruthy();
-          resolve();
-        }
-      });
+  it('emits event properly', async (done) => {
+    await restoreConnection();
 
-      // Square brackets are used for IPv6
-      socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
-        'reconnection delay': 0,
-        'reopen delay': 0,
-        'force new connection': true,
-        transports: ['websocket'],
-      })
-    })
-  );
-
-  it('emits event properly', (done) => {
-    console.log('TEST - 1');
     expect(serverSocket).toBeTruthy();
     const clientEmit = jest.spyOn(socket, 'emit');
 
@@ -90,7 +91,9 @@ describe('Redux middleware', () => {
     store.dispatch(action);
   });
 
-  it('dispatches action from server', (done) => {
+  it('dispatches action from server', async (done) => {
+    await restoreConnection();
+
     const store = createStoreWithMiddleware(
       reduxIoMiddleware({
         socket
