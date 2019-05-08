@@ -4,7 +4,7 @@
   "description": "Treat action types as they were events",
   "main": "index.js",
   "scripts": {
-    "test": "jest --ci --coverage --verbose true --forceExit --runInBand",
+    "test": "jest --ci --coverage --verbose true --detectOpenHandles --runInBand",
     "test:cov": "npm test && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {

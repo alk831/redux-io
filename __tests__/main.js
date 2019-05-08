@@ -30,7 +30,7 @@ beforeEach((done) => {
   ioServer.on('connection', (socket) => {
     serverSocket = socket;
     if (serverSocket && serverSocket.on) {
-      expect(serverSocket).toBeTruthy();
+      expect(serverSocket).not.toBeTruthy();
       done();
     }
   });
