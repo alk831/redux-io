@@ -26,7 +26,17 @@ afterAll((done) => {
   done();
 });
 
-beforeEach(() =>
+afterEach((done) => {
+  if (socket.connected) {
+    socket.disconnect();
+  }
+  done();
+});
+
+
+describe('Redux middleware', () => {
+
+  beforeEach(() =>
   new Promise((resolve) => {
     ioServer.on('connection', (socket) => {
       serverSocket = socket;
@@ -46,16 +56,6 @@ beforeEach(() =>
     })
   })
 );
-
-afterEach((done) => {
-  if (socket.connected) {
-    socket.disconnect();
-  }
-  done();
-});
-
-
-describe('Redux middleware', () => {
 
   it('emits event properly', (done) => {
     expect(serverSocket).toBeTruthy();
