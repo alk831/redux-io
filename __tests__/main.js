@@ -26,24 +26,26 @@ afterAll((done) => {
   done();
 });
 
-beforeEach((done) => {
-  ioServer.on('connection', (socket) => {
-    serverSocket = socket;
-    if (serverSocket && serverSocket.on) {
-      // expect(serverSocket).not.toBeTruthy();
-      expect(serverSocket).toBeTruthy();
-      // done();
-    }
-  });
+beforeEach(() =>
+  new Promise((resolve) => {
+    ioServer.on('connection', (socket) => {
+      serverSocket = socket;
+      if (serverSocket && serverSocket.on) {
+        expect(serverSocket).toBeTruthy();
+        console.log('RESOLVE')
+        resolve();
+      }
+    });
 
-  // Square brackets are used for IPv6
-  socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
-    'reconnection delay': 0,
-    'reopen delay': 0,
-    'force new connection': true,
-    transports: ['websocket'],
-  });
-});
+    // Square brackets are used for IPv6
+    socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
+      'reconnection delay': 0,
+      'reopen delay': 0,
+      'force new connection': true,
+      transports: ['websocket'],
+    })
+  })
+);
 
 afterEach((done) => {
   if (socket.connected) {
