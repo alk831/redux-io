@@ -27,6 +27,10 @@ afterAll((done) => {
 });
 
 beforeEach((done) => {
+  ioServer.on('connection', (socket) => {
+    serverSocket = socket;
+    done();
+  });
   // Square brackets are used for IPv6
   socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
     'reconnection delay': 0,
@@ -34,10 +38,6 @@ beforeEach((done) => {
     'force new connection': true,
     transports: ['websocket'],
   });
-  ioServer.on('connection', (socket) => {
-    serverSocket = socket;
-    done();
-  })
 });
 
 afterEach((done) => {
