@@ -77,8 +77,14 @@ describe('Redux middleware', () => {
 
   it('dispatches action from server', (done) => {
     const store = createStoreWithMiddleware(
-      reduxIoMiddleware({ socket })
+      reduxIoMiddleware({
+        socket
+      })
     );
+    // const storeSubscription = jest.spyOn(store.subscribe);
+    const unsubscribe = store.subscribe((a) => {
+      console.log('CALLED ss', a)
+    });
 
     const action = {
       type: 'SEND_MESSAGE',
@@ -86,6 +92,25 @@ describe('Redux middleware', () => {
       meta: { io: true }
     }
 
-    done();
+    serverSocket.on('SEND_MESSAGE', async (receivedAction, dispatch) => {
+      dispatch({
+        type: '$_RECEIVE_MESSAGE',
+        payload: 'Message sent from server'
+      });
+      await wait();
+
+      dispatch({
+        type: '$_RECEIVE_MESSAGE',
+        payload: 'Message sent from server'
+      });
+
+      await wait(500);
+
+      done();
+    });
+
+    store.dispatch(action);
+
+    unsubscribe();
   });
 });
