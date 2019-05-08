@@ -1,25 +1,58 @@
-const { combineReducers, createStore, applyMiddleware } = require('redux');
-const reduxIo = require('../dist/index').default;
+const reduxIoMiddleware = require('../dist/index').default;
 const io = require('socket.io-client');
+const http = require('http');
+const ioBack = require('socket.io');
+const { createStore, applyMiddleware } = require('redux');
+const { chatReducer } = require('../__mocks__/store');
 
-function chatReducer(state = [], action) {
-  switch(action.type) {
-    case 'SEND_MESSAGE':
-    case '$_RECEIVE_MESSAGE': 
-      [...state, action.payload]
-    default: return state;
+let socket;
+let httpServer;
+let httpServerAddr;
+let ioServer;
+
+beforeAll((done) => {
+  httpServer = http.createServer().listen();
+  httpServerAddr = httpServer.address();
+  ioServer = ioBack(httpServer);
+  done();
+});
+
+afterAll((done) => {
+  ioServer.close();
+  httpServer.close();
+  done();
+});
+
+beforeEach((done) => {
+  // Square brackets are used for IPv6
+  socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
+    'reconnection delay': 0,
+    'reopen delay': 0,
+    'force new connection': true,
+    transports: ['websocket'],
+  });
+  socket.on('connect', () => {
+    done();
+  });
+});
+
+afterEach((done) => {
+  if (socket.connected) {
+    socket.disconnect();
   }
-}
+  done();
+});
 
-describe('', () => {
+
+describe('Redux middleware', () => {
   it('emits event properly', () => {
-    // const spyIo = jest.spyOn(io);
-    const socket = io('localhost');
-    const spyEmit = jest.spyOn(socket, 'emit');
+    const clientEmit = jest.spyOn(socket, 'emit');
 
     const store = createStore(
       chatReducer,
-      applyMiddleware(reduxIo({ socket }))
+      applyMiddleware(
+        reduxIoMiddleware({ socket })
+      )
     );
 
     const action = {
@@ -30,7 +63,6 @@ describe('', () => {
 
     store.dispatch(action);
 
-    // expect(spyIo).toHaveBeenCalled();
-    expect(spyEmit).toHaveBeenCalledWith(action.type, action, expect.any(Function));
+    expect(clientEmit).toHaveBeenCalledWith(action.type, action, expect.any(Function));
   });
 });
