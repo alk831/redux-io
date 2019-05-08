@@ -14,6 +14,7 @@ let ioServer;
 let serverSocket;
 
 beforeAll((done) => {
+  console.log('beforeAll');
   httpServer = http.createServer().listen();
   httpServerAddr = httpServer.address();
   ioServer = ioBack(httpServer);
@@ -21,12 +22,14 @@ beforeAll((done) => {
 });
 
 afterAll((done) => {
+  console.log('afterAll');
   ioServer.close();
   httpServer.close();
   done();
 });
 
 afterEach((done) => {
+  console.log('afterEach');
   if (socket.connected) {
     socket.disconnect();
   }
@@ -38,6 +41,7 @@ describe('Redux middleware', () => {
 
   beforeEach(() =>
     new Promise((resolve) => {
+      console.log('beforeEach');
 
       ioServer.on('connection', (socket) => {
         serverSocket = socket;

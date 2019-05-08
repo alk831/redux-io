@@ -7,4 +7,4 @@ notifications:
 git:
   depth: 1
 script:
-  - npm run test:cov
+  - jest --forceExit
