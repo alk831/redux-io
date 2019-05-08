@@ -3,8 +3,8 @@ const io = require('socket.io-client');
 const http = require('http');
 const ioBack = require('socket.io');
 const { createStore, applyMiddleware } = require('redux');
-const { chatReducer } = require('../__mocks__/store');
-const { wait } = require('./__utils__');
+const { chatReducer, createStoreWithMiddleware } = require('../__mocks__/store');
+const { wait,  } = require('./__utils__');
 
 let socket;
 let httpServer;
@@ -49,7 +49,7 @@ afterEach((done) => {
 
 
 describe('Redux middleware', () => {
-  it('emits event properly', async (done) => {
+  it('emits event properly', (done) => {
     const clientEmit = jest.spyOn(socket, 'emit');
 
     const store = createStore(
@@ -73,5 +73,19 @@ describe('Redux middleware', () => {
     });
 
     store.dispatch(action);
+  });
+
+  it('dispatches action from server', (done) => {
+    const store = createStoreWithMiddleware(
+      reduxIoMiddleware({ socket })
+    );
+
+    const action = {
+      type: 'SEND_MESSAGE',
+      payload: 'test message',
+      meta: { io: true }
+    }
+
+    done();
   });
 });
