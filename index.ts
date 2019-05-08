@@ -18,16 +18,19 @@ interface actionWithMeta extends Action {
 }
 
 const middleware = (options: IOptions) => {
-
   /* Setup listeners and send dispatch argument on first (connect) event */
 
   const mergedOptions = {
     ...defaultOptions,
     ...options
   }
+  const { socket } = mergedOptions;
 
+  if (socket == null) {
+    throw new Error(`You have not passed socket instance to middleware options`);
+  }
+  
   return (store: Store) => (next: Dispatch) => (action: actionWithMeta) => {
-    const { socket } = mergedOptions;
 
     next(action);
 
