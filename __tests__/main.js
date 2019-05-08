@@ -29,13 +29,11 @@ afterAll((done) => {
 beforeEach(async (done) => {
   ioServer.on('connection', (socket) => {
     serverSocket = socket;
-    console.log({ serverSocket });
     if (serverSocket && serverSocket.on) {
       done();
     }
   });
-  
-  await wait();
+  await wait(100);
   // Square brackets are used for IPv6
   socket = io.connect(`http://[${httpServerAddr.address}]:${httpServerAddr.port}`, {
     'reconnection delay': 0,
