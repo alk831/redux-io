@@ -19,6 +19,8 @@ interface actionWithMeta extends Action {
 
 const middleware = (options: IOptions) => {
 
+  /* Setup listeners and send dispatch argument on first (connect) event */
+
   const mergedOptions = {
     ...defaultOptions,
     ...options

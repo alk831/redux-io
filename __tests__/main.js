@@ -4,11 +4,14 @@ const http = require('http');
 const ioBack = require('socket.io');
 const { createStore, applyMiddleware } = require('redux');
 const { chatReducer } = require('../__mocks__/store');
+const { wait } = require('./__utils__');
 
 let socket;
 let httpServer;
 let httpServerAddr;
 let ioServer;
+
+let serverSocket;
 
 beforeAll((done) => {
   httpServer = http.createServer().listen();
@@ -31,9 +34,10 @@ beforeEach((done) => {
     'force new connection': true,
     transports: ['websocket'],
   });
-  socket.on('connect', () => {
+  ioServer.on('connection', (socket) => {
+    serverSocket = socket;
     done();
-  });
+  })
 });
 
 afterEach((done) => {
@@ -45,7 +49,7 @@ afterEach((done) => {
 
 
 describe('Redux middleware', () => {
-  it('emits event properly', () => {
+  it('emits event properly', async (done) => {
     const clientEmit = jest.spyOn(socket, 'emit');
 
     const store = createStore(
@@ -61,8 +65,13 @@ describe('Redux middleware', () => {
       meta: { io: true }
     }
 
-    store.dispatch(action);
+    serverSocket.on(action.type, (receivedAction, dispatch) => {
+      expect(clientEmit).toHaveBeenCalledWith(action.type, action, expect.any(Function));
+      expect(receivedAction).toStrictEqual(action);
+      expect(dispatch).toStrictEqual(expect.any(Function));
+      done();
+    });
 
-    expect(clientEmit).toHaveBeenCalledWith(action.type, action, expect.any(Function));
+    store.dispatch(action);
   });
 });
