@@ -37,7 +37,7 @@ store.dispatch({
 
 socket.on('SEND_MESSAGE', (action, dispatchOnce) => {
 
-  /* Emitting an action to connected clients except sender. */
+  /* Emitting an action to connected clients, except sender. */
   socket.emit('$_RECEIVE_MESSAGE', {
     type: '$_RECEIVE_MESSAGE',
     payload: action.payload
