@@ -2,11 +2,13 @@ import { Action, Dispatch, Store } from 'redux';
 
 interface IOptions {
   socket: SocketIOClient.Socket
+  listenActions: {}
 }
 
 const defaultOptions = {
   autoEmit: true,
-  emitPrefix: '$'
+  emitPrefix: '$',
+  listenActions: {}
 }
 
 interface actionMeta {
@@ -24,18 +26,33 @@ const middleware = (options: IOptions) => {
     ...defaultOptions,
     ...options
   }
-  const { socket } = mergedOptions;
+  const { socket, listenActions } = mergedOptions;
 
   if (socket == null) {
     throw new Error(`You have not passed socket instance to middleware options`);
   }
+
+  return (store: Store) => {
   
-  return (store: Store) => (next: Dispatch) => (action: actionWithMeta) => {
+    for (let actionType in listenActions) {
+      socket.on(actionType, (action: actionWithMeta) => {
+        store.dispatch({
+          ...action,
+          meta: {
+            io: false,
+            ...action.meta || {}
+          }
+        });
+      });
+    }
 
-    next(action);
+    return (next: Dispatch) => (action: actionWithMeta) => {
 
-    if (action.meta && action.meta.io === true) {
-      socket.emit(action.type, action, store.dispatch);
+      next(action);
+
+      if (action.meta && action.meta.io === true) {
+        socket.emit(action.type, action, store.dispatch);
+      }
     }
   }
 }
