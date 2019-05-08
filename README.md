@@ -37,12 +37,16 @@ store.dispatch({
 
 socket.on('SEND_MESSAGE', (action, dispatchOnce) => {
 
+  /* Emitting an action to connected clients except sender. */
   socket.emit('$_RECEIVE_MESSAGE', {
     type: '$_RECEIVE_MESSAGE',
     payload: action.payload
   });
 
-  /* dispatchOnce allows to dispatch one action to the socket that has sent SEND_MESSAGE event */
+  /*
+    We are allowed to dispatch one action to the sender using helper.
+    Obviously, dispatching more actions is available through emit.
+  */
   dispatchOnce({ type: '$_MESSAGE_SUCCESS' });
 });
 
