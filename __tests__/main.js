@@ -13,13 +13,25 @@ let ioServer;
 
 let serverSocket;
 
-function restoreConnection() {
-  return new Promise((resolve) => {
-    
+beforeAll((done) => {
+  httpServer = http.createServer().listen();
+  httpServerAddr = httpServer.address();
+  ioServer = ioBack(httpServer);
+  done();
+});
+
+afterAll((done) => {
+  ioServer.close();
+  httpServer.close();
+  done();
+});
+
+beforeEach(() =>
+  new Promise((resolve) => {
+
     ioServer.on('connection', (socket) => {
       serverSocket = socket;
-      if (serverSocket && serverSocket.on) {
-        expect(serverSocket).toBeTruthy();
+      if (serverSocket) {
         resolve();
       }
     });
@@ -31,26 +43,10 @@ function restoreConnection() {
       'force new connection': true,
       transports: ['websocket'],
     })
-  });
-}
-
-beforeAll((done) => {
-  console.log('beforeAll');
-  httpServer = http.createServer().listen();
-  httpServerAddr = httpServer.address();
-  ioServer = ioBack(httpServer);
-  done();
-});
-
-afterAll((done) => {
-  console.log('afterAll');
-  ioServer.close();
-  httpServer.close();
-  done();
-});
+  })
+);
 
 afterEach((done) => {
-  console.log('afterEach');
   if (socket.connected) {
     socket.disconnect();
   }
@@ -60,12 +56,7 @@ afterEach((done) => {
 
 describe('Redux middleware', () => {
 
-  // beforeEach(restoreConnection);
-
-  it('emits event properly', async (done) => {
-    await restoreConnection();
-
-    expect(serverSocket).toBeTruthy();
+  it('emits event properly', (done) => {
     const clientEmit = jest.spyOn(socket, 'emit');
 
     const store = createStore(
@@ -91,9 +82,7 @@ describe('Redux middleware', () => {
     store.dispatch(action);
   });
 
-  it('dispatches action from server', async (done) => {
-    await restoreConnection();
-
+  it('dispatches action from server', (done) => {
     const store = createStoreWithMiddleware(
       reduxIoMiddleware({
         socket
