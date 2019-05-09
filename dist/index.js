@@ -6,7 +6,7 @@ const defaultOptions = {
     emitPrefix: '$',
     listenTo: []
 };
-const middleware = (options) => {
+exports.ioMiddleware = (options) => {
     const mergedOptions = {
         ...defaultOptions,
         ...options
@@ -31,4 +31,3 @@ const middleware = (options) => {
         };
     };
 };
-exports.default = middleware;

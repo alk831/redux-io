@@ -7,7 +7,7 @@ const defaultOptions = {
   listenTo: []
 }
 
-const middleware = (options: IOptions) => {
+export const ioMiddleware = (options: IOptions) => {
   const mergedOptions = {
     ...defaultOptions,
     ...options
@@ -39,8 +39,6 @@ const middleware = (options: IOptions) => {
     }
   }
 }
-
-export default middleware;
 
 
 interface IOptions {
