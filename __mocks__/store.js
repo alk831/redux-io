@@ -4,6 +4,7 @@ function chatReducer(state = [], action) {
   switch(action.type) {
     case 'SEND_MESSAGE':
     case '$_RECEIVE_MESSAGE':
+    case '$_MESSAGE_RECEIVE':
       return [...state, action.payload]
     default: return state;
   }

@@ -7,6 +7,7 @@ const { chatReducer, createStoreWithMiddleware } = require('../__mocks__/store')
 const { wait } = require('./__utils__');
 
 let socket;
+let clientSocket;
 let serverSocket;
 let httpServer;
 let httpServerAddr;
@@ -43,6 +44,7 @@ beforeEach(() =>
       'force new connection': true,
       transports: ['websocket'],
     })
+    clientSocket = socket;
   })
 );
 
@@ -114,4 +116,38 @@ describe('Redux middleware', () => {
 
     store.dispatch(action);
   });
+
+
+  it('client dispatches listened events', async () => {
+    const subscriptionHandler = jest.fn();
+
+    const store = createStoreWithMiddleware(
+      reduxIoMiddleware({
+        socket,
+        listenTo: ['$_MESSAGE_RECEIVE']
+      })
+    );
+    store.subscribe(subscriptionHandler);
+
+    serverSocket.emit('$_MESSAGE_RECEIVE', {
+      type: '$_MESSAGE_RECEIVE',
+      payload: 'Message sent from server'
+    });
+    await wait();
+
+    expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+    expect(store.getState()).toStrictEqual(['Message sent from server']);
+  });
+
+
+  it('throws error when socket is not passed', () => {
+    try {
+      const store = createStoreWithMiddleware(
+        reduxIoMiddleware({})
+      );
+    } catch(err) {
+      expect(err).toBeInstanceOf(Error);
+    }
+  });
+
 });

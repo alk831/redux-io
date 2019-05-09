@@ -17,4 +17,4 @@ exports.waitForEvent = (socket, eventType, timeout = 2000) =>
     );
   });
 
-exports.wait = (delay = 50) => new Promise(r => setTimeout(r, delay));
+exports.wait = (delay = 15) => new Promise(r => setTimeout(r, delay));
