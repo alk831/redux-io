@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>redux-io</h1>
+  <h1>reduxio</h1>
   <p>Treat action types as they were events.</p>
   <img src="https://cdn.worldvectorlogo.com/logos/socket-io.svg" align="center" width="180" height="180">
 </div>
@@ -16,7 +16,7 @@
 ```js
 import { createStore, applyMiddleware } from 'redux';
 import io from 'socket.io-client';
-import { ioMiddleware } from 'redux-io';
+import { ioMiddleware } from '@art4/reduxio';
 
 const socket = io('localhost');
 
