@@ -4,14 +4,14 @@ const http = require('http');
 const ioBack = require('socket.io');
 const { createStore, applyMiddleware } = require('redux');
 const { chatReducer, createStoreWithMiddleware } = require('../__mocks__/store');
-const { wait,  } = require('./__utils__');
+const { wait } = require('./__utils__');
 
 let socket;
+let serverSocket;
 let httpServer;
 let httpServerAddr;
 let ioServer;
 
-let serverSocket;
 
 beforeAll((done) => {
   httpServer = http.createServer().listen();
@@ -58,6 +58,11 @@ describe('Redux middleware', () => {
 
   it('emits event properly', (done) => {
     const clientEmit = jest.spyOn(socket, 'emit');
+    const action = {
+      type: 'SEND_MESSAGE',
+      payload: 'Message sent from client',
+      meta: { io: true }
+    }
 
     const store = createStore(
       chatReducer,
@@ -66,13 +71,7 @@ describe('Redux middleware', () => {
       )
     );
 
-    const action = {
-      type: 'SEND_MESSAGE',
-      payload: 'Message sent from client',
-      meta: { io: true }
-    }
-
-    serverSocket.on(action.type, (receivedAction, dispatch) => {
+    serverSocket.on('SEND_MESSAGE', (receivedAction, dispatch) => {
       expect(clientEmit).toHaveBeenCalledWith(action.type, action, expect.any(Function));
       expect(receivedAction).toStrictEqual(action);
       expect(dispatch).toStrictEqual(expect.any(Function));
@@ -83,23 +82,19 @@ describe('Redux middleware', () => {
   });
 
   it('dispatches action from server', (done) => {
-    const store = createStoreWithMiddleware(
-      reduxIoMiddleware({
-        socket
-      })
-    );
-    const subscriptionHandler = () => {};
-    const unsubscribe = store.subscribe(subscriptionHandler);
-    // const spySubscription = jest.spyOn(subscriptionHandler);
-
+    const subscriptionHandler = jest.fn();
     const action = {
       type: 'SEND_MESSAGE',
       payload: 'Message sent from client',
       meta: { io: true }
     }
 
-    serverSocket.on('SEND_MESSAGE', async (receivedAction, dispatchOnce) => {
+    const store = createStoreWithMiddleware(
+      reduxIoMiddleware({ socket })
+    );
+    const unsubscribe = store.subscribe(subscriptionHandler);
 
+    serverSocket.on('SEND_MESSAGE', async (receivedAction, dispatchOnce) => {
       expect(store.getState()).toStrictEqual(['Message sent from client']);
       expect(receivedAction).toStrictEqual(action);
 
@@ -107,10 +102,10 @@ describe('Redux middleware', () => {
         type: '$_RECEIVE_MESSAGE',
         payload: 'Message sent from server'
       });
-
       await wait();
 
       expect(store.getState()).toStrictEqual(['Message sent from client', 'Message sent from server']);
+      expect(subscriptionHandler).toHaveBeenCalledTimes(2);
 
       unsubscribe();
       done();
