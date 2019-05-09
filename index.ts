@@ -1,48 +1,38 @@
 import { Action, Dispatch, Store } from 'redux';
-
-interface IOptions {
-  socket: SocketIOClient.Socket
-  listenActions: {}
-}
+import { normalizeActionTypes } from './utils';
 
 const defaultOptions = {
   autoEmit: true,
   emitPrefix: '$',
-  listenActions: {}
-}
-
-interface actionMeta {
-  io: boolean
-}
-
-interface actionWithMeta extends Action {
-  meta: actionMeta
+  listenTo: []
 }
 
 const middleware = (options: IOptions) => {
-  /* Setup listeners and send dispatch argument on first (connect) event */
-
   const mergedOptions = {
     ...defaultOptions,
     ...options
   }
-  const { socket, listenActions } = mergedOptions;
+  const { socket, autoEmit, listenTo } = mergedOptions;
 
   if (socket == null) {
     throw new Error(`You have not passed socket instance to middleware options`);
   }
 
   return (store: Store) => {
+
+    const normalizedActions = normalizeActionTypes(listenTo);
   
-    for (let actionType in listenActions) {
+    for (let actionType of normalizedActions) {
       socket.on(actionType, (action: actionWithMeta) => {
-        store.dispatch({
+        const mergedAction = {
           ...action,
           meta: {
-            io: false,
-            ...action.meta || {}
+            io: autoEmit,
+            ...action.meta
           }
-        });
+        }
+
+        store.dispatch(mergedAction);
       });
     }
 
@@ -58,3 +48,17 @@ const middleware = (options: IOptions) => {
 }
 
 export default middleware;
+
+
+interface IOptions {
+  socket: SocketIOClient.Socket
+  listenActions: [] | {}
+}
+
+interface actionMeta {
+  io: boolean
+}
+
+interface actionWithMeta extends Action {
+  meta: actionMeta
+}

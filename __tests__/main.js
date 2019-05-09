@@ -81,6 +81,7 @@ describe('Redux middleware', () => {
     store.dispatch(action);
   });
 
+  
   it('dispatches action from server', (done) => {
     const subscriptionHandler = jest.fn();
     const action = {
