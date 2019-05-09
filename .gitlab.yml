@@ -1,0 +1,13 @@
+stages:
+- test
+
+cache:
+  paths:
+  - node_modules/
+
+test:
+  stage: test
+  image: node:10
+  script:
+    - npm i
+    - npm run test:cov
