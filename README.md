@@ -16,31 +16,30 @@
 ```js
 import { createStore, applyMiddleware } from 'redux';
 import io from 'socket.io-client';
-import reduxIoMiddleware from 'redux-io';
+import { ioMiddleware } from 'redux-io';
 
 const socket = io('localhost');
 
 const store = createStore(
+  reducers,
   applyMiddleware(
-    reduxIoMiddleware({ socket })
+    ioMiddleware({ socket })
   )
 );
 
 store.dispatch({
-  type: 'SEND_MESSAGE',
-  payload: 'Message sent from client',
-  meta: { io: true }
+  type: 'MESSAGE_SEND',
+  payload: 'Message sent from client'
 });
 ```
 ### Server
 
 ```js
-
-socket.on('SEND_MESSAGE', (action, dispatchOnce) => {
+socket.on('MESSAGE_SEND', (action, dispatchOnce) => {
 
   /* Emitting an action to connected clients, except sender. */
-  socket.emit('$_RECEIVE_MESSAGE', {
-    type: '$_RECEIVE_MESSAGE',
+  socket.emit('$_MESSAGE_RECEIVE', {
+    type: '$_MESSAGE_RECEIVE',
     payload: action.payload
   });
 
