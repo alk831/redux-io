@@ -150,4 +150,56 @@ describe('Redux middleware', () => {
     }
   });
 
+  
+  describe('Many clients', () => {
+
+    let clientA;
+    let clientB;
+
+    beforeEach(async () => {
+      const url = `http://[${httpServerAddr.address}]:${httpServerAddr.port}`;
+      const settings = {
+        'reconnection delay': 0,
+        'reopen delay': 0,
+        'force new connection': true,
+        transports: ['websocket'],
+      }
+
+      clientA = io.connect(url, settings);
+      clientB = io.connect(url, settings);
+      await wait();
+    });
+
+    afterEach(() => {
+      if (clientA.connected) clientA.disconnect();
+      if (clientB.connected) clientB.disconnect();
+    });
+
+
+    it('propagates event between multiple clients', async () => {
+      const storeA = createStoreWithMiddleware(
+        reduxIoMiddleware({
+          socket: clientA,
+          listenTo: ['$_MESSAGE_RECEIVE']
+        })
+      );
+
+      const storeB = createStoreWithMiddleware(
+        reduxIoMiddleware({
+          socket: clientB,
+          listenTo: ['$_MESSAGE_RECEIVE']
+        })
+      );
+
+      ioServer.emit('$_MESSAGE_RECEIVE', {
+        type: '$_MESSAGE_RECEIVE',
+        payload: 'Message emitted to all clients'
+      });
+      await wait();
+
+      expect(storeA.getState()).toStrictEqual(['Message emitted to all clients']);
+      expect(storeB.getState()).toStrictEqual(['Message emitted to all clients']);
+    });
+
+  });
 });
