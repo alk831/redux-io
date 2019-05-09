@@ -1,6 +1,6 @@
 <div align="center">
   <h1>reduxio</h1>
-  <p>Treat action types as they were events.</p>
+  <p>Treat actions as they were events.</p>
   <img src="https://cdn.worldvectorlogo.com/logos/socket-io.svg" align="center" width="180" height="180">
 </div>
 
