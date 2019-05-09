@@ -12,7 +12,7 @@ const middleware = (options: IOptions) => {
     ...defaultOptions,
     ...options
   }
-  const { socket, autoEmit, listenTo } = mergedOptions;
+  const { socket } = mergedOptions;
 
   if (socket == null) {
     throw new Error(`You have not passed socket instance to middleware options`);
@@ -20,27 +20,18 @@ const middleware = (options: IOptions) => {
 
   return (store: Store) => {
 
-    const normalizedActions = normalizeActionTypes(listenTo);
+    const normalizedActions = normalizeActionTypes(mergedOptions.listenTo);
   
     for (let actionType of normalizedActions) {
-      socket.on(actionType, (action: actionWithMeta) => {
-        const mergedAction = {
-          ...action,
-          meta: {
-            io: autoEmit,
-            ...action.meta
-          }
-        }
-
-        store.dispatch(mergedAction);
-      });
+      socket.on(actionType, store.dispatch);
     }
 
     return (next: Dispatch) => (action: actionWithMeta) => {
+      const shouldBeEmitted = (action.meta && action.meta.io) || mergedOptions.autoEmit;
 
       next(action);
 
-      if (action.meta && action.meta.io === true) {
+      if (shouldBeEmitted) {
         socket.emit(action.type, action, store.dispatch);
       }
     }
