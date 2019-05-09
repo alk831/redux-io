@@ -21,7 +21,9 @@ const middleware = (options) => {
             socket.on(actionType, store.dispatch);
         }
         return (next) => (action) => {
-            const shouldBeEmitted = (action.meta && action.meta.io) || mergedOptions.autoEmit;
+            const shouldBeEmitted = (action.meta && action.meta.io != null)
+                ? action.meta.io
+                : mergedOptions.autoEmit;
             next(action);
             if (shouldBeEmitted) {
                 socket.emit(action.type, action, store.dispatch);

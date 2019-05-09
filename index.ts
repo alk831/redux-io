@@ -27,7 +27,9 @@ const middleware = (options: IOptions) => {
     }
 
     return (next: Dispatch) => (action: actionWithMeta) => {
-      const shouldBeEmitted = (action.meta && action.meta.io) || mergedOptions.autoEmit;
+      const shouldBeEmitted = (action.meta && action.meta.io != null)
+        ? action.meta.io
+        : mergedOptions.autoEmit;
 
       next(action);
 

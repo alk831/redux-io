@@ -118,7 +118,7 @@ describe('Redux middleware', () => {
   });
 
 
-  it('client dispatches listened events', async () => {
+  it('dispatches listened events', async () => {
     const subscriptionHandler = jest.fn();
 
     const store = createStoreWithMiddleware(
@@ -150,7 +150,41 @@ describe('Redux middleware', () => {
     }
   });
 
+
+  it('does not emit event when disabled', async () => {
+    const clientEmit = jest.spyOn(clientSocket, 'emit');
+
+    const store = createStoreWithMiddleware(
+      reduxIoMiddleware({
+        socket: clientSocket,
+        autoEmit: false
+      })
+    );
+
+    store.dispatch({
+      type: 'SEND_MESSAGE',
+      payload: 'Message sent from client',
+      meta: { io: false }
+    });
+    store.dispatch({
+      type: 'SEND_MESSAGE',
+      payload: 'Message sent from client'
+    });
+    await wait();
+
+    expect(clientEmit).toHaveBeenCalledTimes(1);
+
+    const action = {
+      type: 'SEND_MESSAGE',
+      payload: 'Message sent from client',
+      meta: { io: true }
+    }
+    store.dispatch(action);
+
+    expect(clientEmit).toHaveBeenLastCalledWith('SEND_MESSAGE', action, expect.any(Function));
+  });
   
+
   describe('Many clients', () => {
 
     let clientA;
