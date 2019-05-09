@@ -7,8 +7,9 @@
 <br />
 <hr />
 
-[![Build Status](https://travis-ci.org/alk831/redux-io.svg?branch=master)](https://travis-ci.org/alk831/redux-io)
+[![pipeline status](https://gitlab.com/alk831/redux-io/badges/master/pipeline.svg)](https://gitlab.com/alk831/redux-io)
 [![Coverage Status](https://coveralls.io/repos/github/alk831/redux-io/badge.svg?branch=master)](https://coveralls.io/github/alk831/redux-io?branch=master)
+<!-- [![Build Status](https://travis-ci.org/alk831/redux-io.svg?branch=master)](https://travis-ci.org/alk831/redux-io) -->
 
 ## Example
 ### Client
