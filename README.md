@@ -23,7 +23,10 @@ const socket = io('localhost');
 const store = createStore(
   reducers,
   applyMiddleware(
-    ioMiddleware({ socket })
+    ioMiddleware({
+      socket,
+      listenTo: ['$_MESSAGE_RECEIVE']
+    })
   )
 );
 
