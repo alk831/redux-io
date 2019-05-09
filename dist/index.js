@@ -22,7 +22,7 @@ exports.ioMiddleware = (options) => {
         }
         return (next) => (action) => {
             const shouldBeEmitted = (action.meta && action.meta.io != null)
-                ? action.meta.io
+                ? !!action.meta.io
                 : mergedOptions.autoEmit;
             next(action);
             if (shouldBeEmitted) {
