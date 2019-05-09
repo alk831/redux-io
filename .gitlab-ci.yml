@@ -10,4 +10,4 @@ test:
   image: node:10
   script:
     - npm i
-    - npm run test:cov
+    - npm run test
