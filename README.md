@@ -12,7 +12,10 @@
 <!-- [![Build Status](https://travis-ci.org/alk831/redux-io.svg?branch=master)](https://travis-ci.org/alk831/redux-io) -->
 Lightweight Redux middleware that simplifies creating real-time apps with socket.io.
 
-## Usage
+## Installation
+```js
+npm i @art4/reduxio
+```
 ```js
 import { createStore, applyMiddleware } from 'redux';
 import io from 'socket.io-client';
@@ -34,7 +37,7 @@ const store = createStore(
 
 ## Example
 ### Client
-```js
+```
 import { createStore, applyMiddleware } from 'redux';
 import io from 'socket.io-client';
 import { createIoMiddleware } from '@art4/reduxio';
@@ -70,7 +73,7 @@ socket.on('MESSAGE_SEND', (action, dispatchOnce) => {
   /*
     We are allowed to dispatch one action to the sender using the helper.
     Obviously, dispatching more actions is available through emit.
-    Advantage of this approach is that we don't have to set up the listener for this action type.
+    Advantage of this approach is that we don't have to set up a listener for this action type.
   */
   dispatchOnce({ type: '$_MESSAGE_SUCCESS' });
 });
