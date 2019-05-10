@@ -10,7 +10,7 @@
 [![pipeline status](https://gitlab.com/alk831/redux-io/badges/master/pipeline.svg)](https://gitlab.com/alk831/redux-io/pipelines)
 [![Coverage Status](https://coveralls.io/repos/github/alk831/redux-io/badge.svg?branch=master)](https://coveralls.io/github/alk831/redux-io?branch=master)
 <!-- [![Build Status](https://travis-ci.org/alk831/redux-io.svg?branch=master)](https://travis-ci.org/alk831/redux-io) -->
-Lightweight Redux middleware that simplifies creating realtime apps with socket.io.
+Lightweight Redux middleware that simplifies creating real-time apps with socket.io.
 
 ## Usage
 ```js
@@ -70,7 +70,7 @@ socket.on('MESSAGE_SEND', (action, dispatchOnce) => {
   /*
     We are allowed to dispatch one action to the sender using the helper.
     Obviously, dispatching more actions is available through emit.
-    Advantage of this approach is that we don't have to setup the listener for this action type.
+    Advantage of this approach is that we don't have to set up the listener for this action type.
   */
   dispatchOnce({ type: '$_MESSAGE_SUCCESS' });
 });
