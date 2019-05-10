@@ -13,11 +13,12 @@
   },
   "keywords": [
     "redux",
-    "realtime",
+    "real-time",
     "socket.io",
     "socket",
-    "websocket",
-    "io"
+    "websockets",
+    "io",
+    "react"
   ],
   "author": "",
   "license": "MIT",
