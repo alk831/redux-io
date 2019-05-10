@@ -31,3 +31,4 @@ exports.ioMiddleware = (options) => {
         };
     };
 };
+exports.createIoMiddleware = exports.ioMiddleware;

@@ -1,4 +1,4 @@
-const { ioMiddleware: reduxIoMiddleware } = require('../dist/index');
+const { createIoMiddleware: reduxIoMiddleware } = require('../dist/index');
 const io = require('socket.io-client');
 const http = require('http');
 const ioBack = require('socket.io');
