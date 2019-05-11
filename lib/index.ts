@@ -1,5 +1,4 @@
 import { Action, Dispatch, Store } from 'redux';
-import { normalizeActionTypes } from './utils';
 
 const defaultOptions = {
   autoEmit: true,
@@ -7,7 +6,7 @@ const defaultOptions = {
   listenTo: []
 }
 
-export const ioMiddleware = (options: IOptions) => {
+export const createIoMiddleware = (options: MiddlewareOptions) => {
   const mergedOptions = {
     ...defaultOptions,
     ...options
@@ -20,13 +19,11 @@ export const ioMiddleware = (options: IOptions) => {
 
   return (store: Store) => {
 
-    const normalizedActions = normalizeActionTypes(mergedOptions.listenTo);
-  
-    for (let actionType of normalizedActions) {
+    for (let actionType of mergedOptions.listenTo) {
       socket.on(actionType, store.dispatch);
     }
 
-    return (next: Dispatch) => (action: actionWithMeta) => {
+    return (next: Dispatch) => (action: ActionWithMeta) => {
 
       const shouldBeEmitted = (action.meta && action.meta.io != null)
         ? !!action.meta.io
@@ -41,17 +38,18 @@ export const ioMiddleware = (options: IOptions) => {
   }
 }
 
-export { ioMiddleware as createIoMiddleware };
+export { createIoMiddleware as ioMiddleware };
 
-interface IOptions {
+interface MiddlewareOptions {
   socket: SocketIOClient.Socket
-  listenActions: [] | {}
+  listenTo?: string[]
+  autoEmit?: boolean
 }
 
-interface actionMeta {
-  io: boolean
+interface ActionMeta {
+  io?: boolean
 }
 
-interface actionWithMeta extends Action {
-  meta: actionMeta
+interface ActionWithMeta extends Action {
+  meta?: ActionMeta
 }
