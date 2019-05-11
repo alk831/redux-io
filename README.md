@@ -78,3 +78,15 @@ socket.on('MESSAGE_SEND', (action, dispatchOnce) => {
   dispatchOnce({ type: '$_MESSAGE_SUCCESS' });
 });
 ```
+
+## API
+### createIoMiddleware (options: object)
+Creates redux middleware with options.
+
+**Options:**
+
+| Name   | Type   | Default | Required | Description |
+| ------ | ------ |:-------:|:--------:| ---- |
+| socket | Object | | yes | Socket.io client instance.
+| autoEmit | Boolean | `true` | | Automatically emit dispatched actions. Can be overwritten for specific action with meta `io: false` option.
+| listenTo | Array | `[]` | | Action types (event names) that are going to be automatically dispatched to the store.
