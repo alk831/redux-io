@@ -37,7 +37,7 @@ const store = createStore(
 
 ## Example
 ### Client
-```
+```js
 import { createStore, applyMiddleware } from 'redux';
 import io from 'socket.io-client';
 import { createIoMiddleware } from '@art4/reduxio';
