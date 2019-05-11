@@ -41,6 +41,7 @@ export const ioMiddleware = (options: IOptions) => {
   }
 }
 
+export { ioMiddleware as createIoMiddleware };
 
 interface IOptions {
   socket: SocketIOClient.Socket

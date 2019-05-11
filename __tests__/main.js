@@ -1,10 +1,10 @@
-const { ioMiddleware: reduxIoMiddleware } = require('../dist/index');
+const { createIoMiddleware: reduxIoMiddleware } = require('../dist/index');
 const io = require('socket.io-client');
 const http = require('http');
 const ioBack = require('socket.io');
 const { createStore, applyMiddleware } = require('redux');
-const { chatReducer, createStoreWithMiddleware } = require('../__mocks__/store');
-const { wait } = require('./__utils__');
+const { chatReducer, createStoreWithMiddleware } = require('./fixtures/store');
+const { wait } = require('./utils');
 
 let socket;
 let clientSocket;
