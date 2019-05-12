@@ -90,3 +90,46 @@ Creates redux middleware with options.
 | socket | Object | | yes | Socket.io client instance.
 | autoEmit | Boolean | `true` | | Automatically emit dispatched actions. Can be overwritten for specific action with meta `io: false` option.
 | listenTo | Array | `[]` | | Action types (event names) that are going to be automatically dispatched to the store.
+
+## More examples
+
+### Emit with client's state
+*Client*
+```js
+store.dispatch({
+  type: 'MESSAGE_SEND',
+  payload: 'Hello',
+  meta: { io: { withState: true }}
+});
+```
+*Server*
+```js
+socket.on('MESSAGE_SEND', (action, state, dispatchOnce) => {
+  /*
+    Client's state is now available under the second argument.
+    Keep in mind that dispatchOnce is always provided as last argument.
+  */
+});
+```
+
+### Disable emitting specific action
+```js
+const ioMiddleware = createIoMiddleware({
+  socket,
+  autoEmit: true
+});
+
+const store = createStore(
+  reducers,
+  applyMiddleware(ioMiddleware)
+);
+
+store.dispatch({
+  type: 'MESSAGE_SEND',
+  payload: 'Hello',
+  meta: {
+    /* Auto emit option from middleware creator has lower priority, so this action won't be emitted. */
+    io: false
+  }
+});
+```
