@@ -19,12 +19,13 @@ exports.createIoMiddleware = (options) => {
             socket.on(actionType, store.dispatch);
         }
         return (next) => (action) => {
-            const shouldBeEmitted = (action.meta && action.meta.io != null)
-                ? !!action.meta.io
+            const meta = action.meta || {};
+            const shouldBeEmitted = (meta.io != null)
+                ? !!meta.io
                 : mergedOptions.autoEmit;
             next(action);
             if (shouldBeEmitted) {
-                if (action.meta && typeof action.meta.io === 'object' && action.meta.io.withState) {
+                if (typeof meta.io === 'object' && meta.io.withState) {
                     socket.emit(action.type, action, store.getState(), store.dispatch);
                 }
                 else {
