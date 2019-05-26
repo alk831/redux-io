@@ -91,6 +91,23 @@ Creates redux middleware with options.
 | autoEmit | Boolean | `true` | | Automatically emit dispatched actions. Can be overwritten for specific action with meta `io: false` option.
 | listenTo | Array | `[]` | | Action types (event names) that are going to be automatically dispatched to the store.
 
+<br />
+
+### io: boolean | object
+Options that are passed to action's meta as `io` property.
+
+**io: boolean**
+Determines if the action has to be emitted or not.
+
+**io: object**
+Allows to pass options when emitting specific action.
+
+| Name   | Type   | Default | Description |
+| ------ | ------ |:-------:| ---- |
+| withState | Boolean | false | Emits action with current store state (after this action has been dispatched). |
+
+<br />
+
 ## More examples
 
 ### Emit with client's state
@@ -112,7 +129,7 @@ socket.on('MESSAGE_SEND', (action, state, dispatchOnce) => {
 });
 ```
 
-### Disable emitting specific action
+### Disable/enable emitting specific action
 ```js
 const ioMiddleware = createIoMiddleware({
   socket,
