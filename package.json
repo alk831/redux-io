@@ -1,6 +1,6 @@
 {
   "name": "@art4/reduxio",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Treat actions as they were events",
   "main": "index.js",
   "scripts": {
