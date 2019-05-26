@@ -1,6 +1,6 @@
 {
   "name": "@art4/reduxio",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Treat actions as they were events",
   "main": "index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,8 @@
     "test": "jest --ci --coverage --colors --verbose true --forceExit",
     "test:cov": "npm test && cat ./coverage/lcov.info | coveralls",
     "docs": "typedoc --out docs",
-    "docs:md": "typedoc --theme markdown --out docs"
+    "docs:md": "typedoc --theme markdown --out docs",
+    "prepare": "npx tsc -d"
   },
   "repository": {
     "type": "git",
