@@ -24,15 +24,19 @@ export const createIoMiddleware = (options: MiddlewareOptions) => {
     }
 
     return (next: Dispatch) => (action: ActionWithMeta) => {
-
-      const shouldBeEmitted = (action.meta && action.meta.io != null)
-        ? !!action.meta.io
-        : mergedOptions.autoEmit;
+      const meta = action.meta || {};
+      const shouldBeEmitted = (meta.io != null)
+          ? !!meta.io
+          : mergedOptions.autoEmit;
 
       next(action);
 
       if (shouldBeEmitted) {
-        socket.emit(action.type, action, store.dispatch);
+        if (typeof meta.io === 'object' && meta.io.withState) {
+          socket.emit(action.type, action, store.getState(), store.dispatch);
+        } else {
+          socket.emit(action.type, action, store.dispatch);
+        }
       }
     }
   }
@@ -46,8 +50,12 @@ interface MiddlewareOptions {
   autoEmit?: boolean
 }
 
+interface IoOptions {
+  withState?: boolean
+}
+
 interface ActionMeta {
-  io?: boolean
+  io?: boolean | IoOptions
 }
 
 interface ActionWithMeta extends Action {

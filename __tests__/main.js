@@ -1,4 +1,4 @@
-const { createIoMiddleware: reduxIoMiddleware } = require('../dist/index');
+const { createIoMiddleware: reduxIoMiddleware, createIoMiddleware } = require('../dist/index');
 const io = require('socket.io-client');
 const http = require('http');
 const ioBack = require('socket.io');
@@ -182,6 +182,27 @@ describe('Redux middleware', () => {
     store.dispatch(action);
 
     expect(clientEmit).toHaveBeenLastCalledWith('SEND_MESSAGE', action, expect.any(Function));
+  });
+
+
+  it('emits store state', (done) => {
+    const store = createStoreWithMiddleware(
+      createIoMiddleware({ socket })
+    );
+    const action = {
+      type: 'SEND_MESSAGE',
+      payload: 'Hello',
+      meta: { io: { withState: true }}
+    }
+
+    serverSocket.on('SEND_MESSAGE', (receivedAction, state, dispatchOnce) => {
+      expect(receivedAction).toStrictEqual(action);
+      expect(state).toStrictEqual(['Hello']);
+      expect(dispatchOnce).toStrictEqual(expect.any(Function));
+      done();
+    });
+
+    store.dispatch(action);
   });
   
 

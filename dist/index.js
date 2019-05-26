@@ -1,12 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("./utils");
 const defaultOptions = {
     autoEmit: true,
     emitPrefix: '$',
     listenTo: []
 };
-exports.ioMiddleware = (options) => {
+exports.createIoMiddleware = (options) => {
     const mergedOptions = {
         ...defaultOptions,
         ...options
@@ -16,19 +15,24 @@ exports.ioMiddleware = (options) => {
         throw new Error(`You have not passed socket instance to middleware options`);
     }
     return (store) => {
-        const normalizedActions = utils_1.normalizeActionTypes(mergedOptions.listenTo);
-        for (let actionType of normalizedActions) {
+        for (let actionType of mergedOptions.listenTo) {
             socket.on(actionType, store.dispatch);
         }
         return (next) => (action) => {
-            const shouldBeEmitted = (action.meta && action.meta.io != null)
-                ? !!action.meta.io
+            const meta = action.meta || {};
+            const shouldBeEmitted = (meta.io != null)
+                ? !!meta.io
                 : mergedOptions.autoEmit;
             next(action);
             if (shouldBeEmitted) {
-                socket.emit(action.type, action, store.dispatch);
+                if (typeof meta.io === 'object' && meta.io.withState) {
+                    socket.emit(action.type, action, store.getState(), store.dispatch);
+                }
+                else {
+                    socket.emit(action.type, action, store.dispatch);
+                }
             }
         };
     };
 };
-exports.createIoMiddleware = exports.ioMiddleware;
+exports.ioMiddleware = exports.createIoMiddleware;
