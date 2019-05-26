@@ -68,6 +68,9 @@ interface IoOptions {
 
 interface ActionWithMeta extends Action {
   meta?: {
+    /**
+     * Disables/enables action emitting, or provides options to emitter when enabled.
+     */
     io?: boolean | IoOptions
   }
 }
