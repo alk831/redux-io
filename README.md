@@ -12,7 +12,7 @@
 <!-- [![Build Status](https://travis-ci.org/alk831/redux-io.svg?branch=master)](https://travis-ci.org/alk831/redux-io) -->
 Lightweight Redux middleware that simplifies creating real-time apps with socket.io.
 
-## Installation
+## Getting started
 ```js
 npm i @art4/reduxio
 ```
