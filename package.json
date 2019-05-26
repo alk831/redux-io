@@ -39,6 +39,7 @@
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
     "typedoc": "^0.14.2",
-    "typedoc-plugin-markdown": "^1.2.0"
+    "typedoc-plugin-markdown": "^1.2.0",
+    "typescript": "^3.4.5"
   }
 }

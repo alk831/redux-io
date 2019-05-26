@@ -10,4 +10,5 @@ test:
   image: node:10
   script:
     - npm i
+    - npx tsc
     - npm run test
