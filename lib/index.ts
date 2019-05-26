@@ -1,13 +1,11 @@
 import { Action, Dispatch, Store } from 'redux';
-import { normalizeActionTypes } from './utils';
 
 const defaultOptions = {
   autoEmit: true,
-  emitPrefix: '$',
   listenTo: []
 }
 
-export const ioMiddleware = (options: IOptions) => {
+export const createIoMiddleware = (options: CreateIoMiddleware) => {
   const mergedOptions = {
     ...defaultOptions,
     ...options
@@ -20,38 +18,43 @@ export const ioMiddleware = (options: IOptions) => {
 
   return (store: Store) => {
 
-    const normalizedActions = normalizeActionTypes(mergedOptions.listenTo);
-  
-    for (let actionType of normalizedActions) {
+    for (let actionType of mergedOptions.listenTo) {
       socket.on(actionType, store.dispatch);
     }
 
-    return (next: Dispatch) => (action: actionWithMeta) => {
-
-      const shouldBeEmitted = (action.meta && action.meta.io != null)
-        ? !!action.meta.io
-        : mergedOptions.autoEmit;
+    return (next: Dispatch) => (action: ActionWithMeta) => {
+      const meta = action.meta || {};
+      const shouldBeEmitted = (meta.io != null)
+          ? !!meta.io
+          : mergedOptions.autoEmit;
 
       next(action);
 
       if (shouldBeEmitted) {
-        socket.emit(action.type, action, store.dispatch);
+        if (typeof meta.io === 'object' && meta.io.withState) {
+          socket.emit(action.type, action, store.getState(), store.dispatch);
+        } else {
+          socket.emit(action.type, action, store.dispatch);
+        }
       }
     }
   }
 }
 
-export { ioMiddleware as createIoMiddleware };
+export { createIoMiddleware as ioMiddleware };
 
-interface IOptions {
+interface CreateIoMiddleware {
   socket: SocketIOClient.Socket
-  listenActions: [] | {}
+  listenTo?: string[]
+  autoEmit?: boolean
 }
 
-interface actionMeta {
-  io: boolean
+interface IoOptions {
+  withState?: boolean
 }
 
-interface actionWithMeta extends Action {
-  meta: actionMeta
+interface ActionWithMeta extends Action {
+  meta?: {
+    io?: boolean | IoOptions
+  }
 }

@@ -12,7 +12,7 @@
 <!-- [![Build Status](https://travis-ci.org/alk831/redux-io.svg?branch=master)](https://travis-ci.org/alk831/redux-io) -->
 Lightweight Redux middleware that simplifies creating real-time apps with socket.io.
 
-## Installation
+## Getting started
 ```js
 npm i @art4/reduxio
 ```
@@ -90,3 +90,63 @@ Creates redux middleware with options.
 | socket | Object | | yes | Socket.io client instance.
 | autoEmit | Boolean | `true` | | Automatically emit dispatched actions. Can be overwritten for specific action with meta `io: false` option.
 | listenTo | Array | `[]` | | Action types (event names) that are going to be automatically dispatched to the store.
+
+<br />
+
+### io: boolean | object
+Options that are passed to action's meta as `io` property.
+
+**io: boolean**
+Determines if the action has to be emitted or not.
+
+**io: object**
+Allows to pass options when emitting specific action.
+
+| Name   | Type   | Default | Description |
+| ------ | ------ |:-------:| ---- |
+| withState | Boolean | false | Emits action with current store state (after this action has been dispatched). |
+
+<br />
+
+## More examples
+
+### Emit with client's state
+*Client*
+```js
+store.dispatch({
+  type: 'MESSAGE_SEND',
+  payload: 'Hello',
+  meta: { io: { withState: true }}
+});
+```
+*Server*
+```js
+socket.on('MESSAGE_SEND', (action, state, dispatchOnce) => {
+  /*
+    Client's state is now available under the second argument.
+    Keep in mind that dispatchOnce is always provided as last argument.
+  */
+});
+```
+
+### Disable/enable emitting specific action
+```js
+const ioMiddleware = createIoMiddleware({
+  socket,
+  autoEmit: true
+});
+
+const store = createStore(
+  reducers,
+  applyMiddleware(ioMiddleware)
+);
+
+store.dispatch({
+  type: 'MESSAGE_SEND',
+  payload: 'Hello',
+  meta: {
+    /* Auto emit option from middleware creator has lower priority, so this action won't be emitted. */
+    io: false
+  }
+});
+```
