@@ -44,12 +44,25 @@ export const createIoMiddleware = (options: CreateIoMiddleware) => {
 export { createIoMiddleware as ioMiddleware };
 
 interface CreateIoMiddleware {
+  /**
+   * Socket.io client instance.
+   */
   socket: SocketIOClient.Socket
+  /**
+   * Action types (event names) that are going to be automatically dispatched to the store.
+   */
   listenTo?: string[]
+  /**
+   * Automatically emit every dispatched action.
+   * Can be overwritten for specific action with meta `io: false` option.
+   */
   autoEmit?: boolean
 }
 
 interface IoOptions {
+  /**
+   * Emits action with current store state (after this action has been dispatched).
+   */
   withState?: boolean
 }
 
