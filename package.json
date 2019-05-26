@@ -8,7 +8,8 @@
     "test": "jest --ci --coverage --colors --verbose true --forceExit",
     "test:cov": "npm test && cat ./coverage/lcov.info | coveralls",
     "docs": "typedoc --out docs",
-    "docs:md": "typedoc --theme markdown --out docs"
+    "docs:md": "typedoc --theme markdown --out docs",
+    "prepare": "npx tsc -d"
   },
   "repository": {
     "type": "git",
