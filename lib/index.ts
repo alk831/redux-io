@@ -5,7 +5,7 @@ const defaultOptions = {
   listenTo: []
 }
 
-export const createIoMiddleware = (options: MiddlewareOptions) => {
+export const createIoMiddleware = (options: CreateIoMiddleware) => {
   const mergedOptions = {
     ...defaultOptions,
     ...options
@@ -43,7 +43,7 @@ export const createIoMiddleware = (options: MiddlewareOptions) => {
 
 export { createIoMiddleware as ioMiddleware };
 
-interface MiddlewareOptions {
+interface CreateIoMiddleware {
   socket: SocketIOClient.Socket
   listenTo?: string[]
   autoEmit?: boolean
@@ -53,10 +53,8 @@ interface IoOptions {
   withState?: boolean
 }
 
-interface ActionMeta {
-  io?: boolean | IoOptions
-}
-
 interface ActionWithMeta extends Action {
-  meta?: ActionMeta
+  meta?: {
+    io?: boolean | IoOptions
+  }
 }
