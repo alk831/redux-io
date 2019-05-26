@@ -2,7 +2,6 @@ import { Action, Dispatch, Store } from 'redux';
 
 const defaultOptions = {
   autoEmit: true,
-  emitPrefix: '$',
   listenTo: []
 }
 
