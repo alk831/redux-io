@@ -50,11 +50,13 @@ interface CreateIoMiddleware {
   socket: SocketIOClient.Socket
   /**
    * Action types (event names) that are going to be automatically dispatched to the store.
+   * @default []
    */
   listenTo?: string[]
   /**
    * Automatically emit every dispatched action.
    * Can be overwritten for specific action with meta `io: false` option.
+   * @default true
    */
   autoEmit?: boolean
 }
