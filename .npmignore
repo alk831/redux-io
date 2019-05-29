@@ -1,2 +1,5 @@
 /__tests__
 .gitlab-ci.yml
+/coverage
+jest.config.js
+.travis.yml
