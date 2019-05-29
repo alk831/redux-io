@@ -35,6 +35,10 @@ const store = createStore(
 );
 ```
 
+## How it works
+![Alt text](/diagram.png "Reduxio diagram")
+
+
 ## Example
 ### Client
 ```js
