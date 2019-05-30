@@ -64,6 +64,7 @@ interface CreateIoMiddleware {
 interface IoOptions {
   /**
    * Emits action with current store state (after this action has been dispatched).
+   * @default false
    */
   withState?: boolean
 }
