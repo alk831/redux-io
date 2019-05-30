@@ -1,11 +1,11 @@
-import { Action, Dispatch, Store } from 'redux';
+import { Action, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
 const defaultOptions = {
   autoEmit: true,
   listenTo: []
 }
 
-export const createIoMiddleware = (options: CreateIoMiddleware) => {
+export const createIoMiddleware = (options: CreateIoMiddleware): Middleware => {
   const mergedOptions = {
     ...defaultOptions,
     ...options
@@ -16,7 +16,7 @@ export const createIoMiddleware = (options: CreateIoMiddleware) => {
     throw new Error(`You have not passed socket instance to middleware options`);
   }
 
-  return (store: Store) => {
+  return (store: MiddlewareAPI) => {
 
     for (let actionType of mergedOptions.listenTo) {
       socket.on(actionType, store.dispatch);
