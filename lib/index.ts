@@ -24,8 +24,8 @@ export const createIoMiddleware = (options: CreateIoMiddleware) => {
 
     return (next: Dispatch) => (action: ActionWithMeta) => {
       const meta = action.meta || {};
-      const shouldBeEmitted = (meta.io != null)
-          ? !!meta.io
+      const shouldBeEmitted = meta.io != null
+          ? meta.io
           : mergedOptions.autoEmit;
 
       next(action);
