@@ -1,11 +1,11 @@
-import { Action, Dispatch, Store } from 'redux';
+import { Action, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
 const defaultOptions = {
   autoEmit: true,
   listenTo: []
 }
 
-export const createIoMiddleware = (options: CreateIoMiddleware) => {
+export const createIoMiddleware = (options: CreateIoMiddleware): Middleware => {
   const mergedOptions = {
     ...defaultOptions,
     ...options
@@ -16,7 +16,7 @@ export const createIoMiddleware = (options: CreateIoMiddleware) => {
     throw new Error(`You have not passed socket instance to middleware options`);
   }
 
-  return (store: Store) => {
+  return (store: MiddlewareAPI) => {
 
     for (let actionType of mergedOptions.listenTo) {
       socket.on(actionType, store.dispatch);
@@ -24,8 +24,8 @@ export const createIoMiddleware = (options: CreateIoMiddleware) => {
 
     return (next: Dispatch) => (action: ActionWithMeta) => {
       const meta = action.meta || {};
-      const shouldBeEmitted = (meta.io != null)
-          ? !!meta.io
+      const shouldBeEmitted = meta.io != null
+          ? meta.io
           : mergedOptions.autoEmit;
 
       next(action);
@@ -50,11 +50,13 @@ interface CreateIoMiddleware {
   socket: SocketIOClient.Socket
   /**
    * Action types (event names) that are going to be automatically dispatched to the store.
+   * @default []
    */
   listenTo?: string[]
   /**
    * Automatically emit every dispatched action.
    * Can be overwritten for specific action with meta `io: false` option.
+   * @default true
    */
   autoEmit?: boolean
 }
@@ -62,6 +64,7 @@ interface CreateIoMiddleware {
 interface IoOptions {
   /**
    * Emits action with current store state (after this action has been dispatched).
+   * @default false
    */
   withState?: boolean
 }
